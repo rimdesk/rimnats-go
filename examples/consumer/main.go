@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	client = nexor.New("nats://localhost:4333")
+	client = rimnats.New("nats://localhost:4333")
 )
 
 func init() {

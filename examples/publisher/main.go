@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	client = nexor.New("nats://localhost:4333")
+	client = rimnats.New("nats://localhost:4333")
 )
 
 func init() {
@@ -40,9 +40,11 @@ func main() {
 	for {
 		// Get the current time
 		currentTime := time.Now()
+
 		// List of sample words
 		words := []string{"Apple", "Banana", "Orange", "Mango", "Grape", "Peach", "Plum", "Cherry", "Lemon", "Lime"}
 		subjects := []string{"sample.created", "sample.updated"}
+
 		// Generate a random word
 		randomWord := words[currentTime.UnixNano()%int64(len(words))]
 		subject := subjects[currentTime.UnixNano()%int64(len(subjects))]

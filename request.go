@@ -1,10 +1,11 @@
-package nexor
+package rimnats
 
 import (
 	"context"
-	"google.golang.org/protobuf/proto"
 	"log"
 	"time"
+
+	"google.golang.org/protobuf/proto"
 )
 
 // Request sends a protobuf message as a request and waits for a protobuf reply.

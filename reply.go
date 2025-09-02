@@ -1,10 +1,11 @@
-package nexor
+package rimnats
 
 import (
 	"context"
+	"log"
+
 	"github.com/nats-io/nats.go"
 	"google.golang.org/protobuf/proto"
-	"log"
 )
 
 // Reply sets up a handler that receives protobuf request messages and responds with protobuf replies.
