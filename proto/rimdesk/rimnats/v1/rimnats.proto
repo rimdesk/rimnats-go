@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package shooters.nexor.v1;
+package rimdesk.rimnats.v1;
 
 message ProductCreated {
   string id = 1;

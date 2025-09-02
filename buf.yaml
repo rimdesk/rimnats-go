@@ -2,7 +2,7 @@
 version: v2
 modules:
   - path: proto
-    name: buf.build/shooters/nexor
+    name: buf.build/rimdesk/rimnats
 lint:
   use:
     - STANDARD

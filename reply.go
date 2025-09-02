@@ -16,7 +16,7 @@ func (n *nexor) Reply(subject string, reqFactory func() proto.Message, handler f
 		req := reqFactory()
 		if err := proto.Unmarshal(m.Data, req); err != nil {
 			if n.cfg.Debug {
-				log.Printf("❌ nexor: failed to unmarshal request: %v", err)
+				log.Printf("❌ rimnats: failed to unmarshal request: %v", err)
 			}
 			return
 		}
@@ -24,7 +24,7 @@ func (n *nexor) Reply(subject string, reqFactory func() proto.Message, handler f
 		resp, err := handler(context.Background(), req)
 		if err != nil {
 			if n.cfg.Debug {
-				log.Printf("❌ nexor: request handler failed: %v", err)
+				log.Printf("❌ rimnats: request handler failed: %v", err)
 			}
 			// Optionally send an error message (could serialize error into protobuf)
 			_ = m.Respond([]byte{})
@@ -34,7 +34,7 @@ func (n *nexor) Reply(subject string, reqFactory func() proto.Message, handler f
 		data, err := proto.Marshal(resp)
 		if err != nil {
 			if n.cfg.Debug {
-				log.Printf("❌ nexor: failed to marshal response: %v", err)
+				log.Printf("❌ rimnats: failed to marshal response: %v", err)
 			}
 			return
 		}
@@ -43,7 +43,7 @@ func (n *nexor) Reply(subject string, reqFactory func() proto.Message, handler f
 	})
 
 	if err != nil && n.cfg.Debug {
-		log.Printf("❌ nexor: failed to subscribe for reply on %s: %v", subject, err)
+		log.Printf("❌ rimnats: failed to subscribe for reply on %s: %v", subject, err)
 	}
 
 	return err

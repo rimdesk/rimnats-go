@@ -16,7 +16,7 @@ func (n *nexor) Request(ctx context.Context, subject string, req proto.Message, 
 	data, err := proto.Marshal(req)
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ nexor: failed to marshal request: %v", err)
+			log.Printf("❌ rimnats: failed to marshal request: %v", err)
 		}
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func (n *nexor) Request(ctx context.Context, subject string, req proto.Message, 
 	msg, err := n.conn.RequestWithContext(ctx, subject, data)
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ nexor: request error: %v", err)
+			log.Printf("❌ rimnats: request error: %v", err)
 		}
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (n *nexor) Request(ctx context.Context, subject string, req proto.Message, 
 	reply := factory()
 	if err := proto.Unmarshal(msg.Data, reply); err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ nexor: failed to unmarshal response: %v", err)
+			log.Printf("❌ rimnats: failed to unmarshal response: %v", err)
 		}
 		return nil, err
 	}
