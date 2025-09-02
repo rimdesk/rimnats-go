@@ -1,7 +1,7 @@
 // Package rimnats provides a NATS client implementation with support for JetStream.
 // It simplifies the process of connecting to NATS servers and managing connections
 // with configurable options through environment variables.
-package nexor
+package rimnats
 
 import (
 	"context"

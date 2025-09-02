@@ -1,4 +1,4 @@
-package nexor
+package rimnats
 
 import (
 	"context"

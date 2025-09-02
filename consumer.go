@@ -1,7 +1,7 @@
 // Package rimnats provides a NATS client implementation with support for protobuf message handling.
 // It simplifies the process of publishing and subscribing to messages using Protocol Buffers
 // for message serialization and deserialization.
-package nexor
+package rimnats
 
 import (
 	"context"
