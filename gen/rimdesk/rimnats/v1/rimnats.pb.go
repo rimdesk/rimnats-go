@@ -247,8 +247,8 @@ const file_rimdesk_rimnats_v1_rimnats_proto_rawDesc = "" +
 	"\x0fSayHelloRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\",\n" +
 	"\x10SayHelloResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessageB\xc3\x01\n" +
-	"\x16com.rimdesk.rimnats.v1B\fRimnatsProtoP\x01Z1github.com/rimdesk/rimnats/gen/rimdesk/rimnats/v1\xa2\x02\x03RRX\xaa\x02\x12Rimdesk.Rimnats.V1\xca\x02\x12Rimdesk\\Rimnats\\V1\xe2\x02\x1eRimdesk\\Rimnats\\V1\\GPBMetadata\xea\x02\x14Rimdesk::Rimnats::V1b\x06proto3"
+	"\amessage\x18\x01 \x01(\tR\amessageB\xc6\x01\n" +
+	"\x16com.rimdesk.rimnats.v1B\fRimnatsProtoP\x01Z4github.com/rimdesk/rimnats-go/gen/rimdesk/rimnats/v1\xa2\x02\x03RRX\xaa\x02\x12Rimdesk.Rimnats.V1\xca\x02\x12Rimdesk\\Rimnats\\V1\xe2\x02\x1eRimdesk\\Rimnats\\V1\\GPBMetadata\xea\x02\x14Rimdesk::Rimnats::V1b\x06proto3"
 
 var (
 	file_rimdesk_rimnats_v1_rimnats_proto_rawDescOnce sync.Once

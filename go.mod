@@ -1,4 +1,4 @@
-module github.com/rimdesk/rimnats
+module github.com/rimdesk/rimnats-go
 
 go 1.24
 
