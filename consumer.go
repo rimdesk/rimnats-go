@@ -1,4 +1,4 @@
-// Package nexor provides a NATS client implementation with support for protobuf message handling.
+// Package rimnats provides a NATS client implementation with support for protobuf message handling.
 // It simplifies the process of publishing and subscribing to messages using Protocol Buffers
 // for message serialization and deserialization.
 package nexor
@@ -74,7 +74,7 @@ func (n *nexor) Subscribe(
 		msg := factory()
 		if err := proto.Unmarshal(m.Data(), msg); err != nil {
 			if n.cfg.Debug {
-				log.Printf("🚨 nexor: failed to decode protobuf: %v", err)
+				log.Printf("🚨 rimnats: failed to decode protobuf: %v", err)
 			}
 
 			_ = m.Nak() // NACK to let NATS know we couldn't process the message
@@ -84,7 +84,7 @@ func (n *nexor) Subscribe(
 		// Call the handler to process the message
 		if err := handler(ctx, msg, m); err != nil {
 			if n.cfg.Debug {
-				log.Printf("🚨 nexor: handler error: %v", err)
+				log.Printf("🚨 rimnats: handler error: %v", err)
 			}
 
 			_ = m.Nak() // NACK if the handler fails
@@ -94,13 +94,13 @@ func (n *nexor) Subscribe(
 
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ nexor: failed to subscribe to subject: %s: %v", subject, err)
+			log.Printf("❌ rimnats: failed to subscribe to subject: %s: %v", subject, err)
 		}
 		return err
 	}
 
 	if n.cfg.Debug {
-		log.Printf("🚀 nexor: successfully subscribed to subject: %s", subject)
+		log.Printf("🚀 rimnats: successfully subscribed to subject: %s", subject)
 	}
 
 	return err

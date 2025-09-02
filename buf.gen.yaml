@@ -6,7 +6,7 @@ managed:
   enabled: true
   override:
     - file_option: go_package
-      value: github.com/rimdesk/rimnats/gen/shooters/nexor/v1
+      value: github.com/rimdesk/rimnats/gen/rimdesk/rimnats/v1
   disable:
     - file_option: go_package
       module: buf.build/googleapis/googleapis

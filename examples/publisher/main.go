@@ -4,16 +4,17 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/nats-io/nats.go/jetstream"
 	"github.com/rimdesk/rimnats"
-	v1 "github.com/rimdesk/rimnats/gen/shooters/nexor/v1"
+	v1 "github.com/rimdesk/rimnats/gen/rimdesk/rimnats/v1"
 )
 
 var (
-	client = nexor.New("nats://localhost:4222")
+	client = nexor.New("nats://localhost:4333")
 )
 
 func init() {
@@ -26,12 +27,15 @@ func main() {
 	ctx := context.Background()
 
 	// Initialize the event bus
-	_ = client.CreateStream(ctx, jetstream.StreamConfig{
-		Name:        "SAMPLE_EVENTS",
+	if err := client.CreateStream(ctx, jetstream.StreamConfig{
+		Name:        "product_stream",
 		Description: "Sample events",
 		Subjects:    []string{"sample.>"},
 		MaxBytes:    1024 * 1024 * 1024,
-	})
+	}); err != nil {
+		log.Println("🚨 [RIMNats]: Failed to initialize event bus:", err)
+		os.Exit(1)
+	}
 
 	for {
 		// Get the current time

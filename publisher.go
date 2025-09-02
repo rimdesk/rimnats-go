@@ -23,7 +23,7 @@ func (n *nexor) Publish(ctx context.Context, subject string, msg proto.Message, 
 	data, err := proto.Marshal(msg)
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ nexor: failed to encode protobuf: %v", err)
+			log.Printf("❌ rimnats: failed to encode protobuf: %v", err)
 		}
 
 		return err
@@ -32,17 +32,17 @@ func (n *nexor) Publish(ctx context.Context, subject string, msg proto.Message, 
 	ack, err := n.js.Publish(ctx, subject, data, opts...)
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ nexor: failed to publish message: %v", err)
+			log.Printf("❌ rimnats: failed to publish message: %v", err)
 		}
 
 		return err
 	}
 
 	if n.cfg.Debug {
-		log.Printf("🚀 nexor: published message on domain: %s", ack.Domain)
-		log.Printf("🚀 nexor: published message on sequence: %d", ack.Sequence)
-		log.Printf("🚀 nexor: published message on duplicate: %v", ack.Duplicate)
-		log.Printf("🚀 nexor: published message on stream: %s", ack.Stream)
+		log.Printf("🚀 rimnats: published message on domain: %s", ack.Domain)
+		log.Printf("🚀 rimnats: published message on sequence: %d", ack.Sequence)
+		log.Printf("🚀 rimnats: published message on duplicate: %v", ack.Duplicate)
+		log.Printf("🚀 rimnats: published message on stream: %s", ack.Stream)
 	}
 
 	return err
