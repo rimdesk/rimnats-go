@@ -16,8 +16,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/nats-io/nats.go/jetstream"
-	"github.com/rimdesk/rimnats"
-	v1 "github.com/rimdesk/rimnats/gen/shooters/nexor/v1"
+	"github.com/rimdesk/rimnats-go"
+	v1 "github.com/rimdesk/rimnats-go/gen/shooters/nexor/v1"
 )
 
 var (

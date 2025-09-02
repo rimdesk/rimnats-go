@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/rimdesk/rimnats"
-	v1 "github.com/rimdesk/rimnats/gen/shooters/nexor/v1"
+	"github.com/rimdesk/rimnats-go"
+	v1 "github.com/rimdesk/rimnats-go/gen/shooters/nexor/v1"
 	"google.golang.org/protobuf/proto"
 )
 
