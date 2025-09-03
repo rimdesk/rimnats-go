@@ -12,7 +12,7 @@ import (
 // - subject: Subject to listen for requests on
 // - reqFactory: Function that returns a new instance of the request message type
 // - handler: Function to handle the request and return a response
-func (n *nexor) Reply(subject string, reqFactory func() proto.Message, handler func(context.Context, proto.Message) (proto.Message, error)) error {
+func (n *rimNats) Reply(subject string, reqFactory func() proto.Message, handler func(context.Context, proto.Message) (proto.Message, error)) error {
 	_, err := n.conn.Subscribe(subject, func(m *nats.Msg) {
 		req := reqFactory()
 		if err := proto.Unmarshal(m.Data, req); err != nil {

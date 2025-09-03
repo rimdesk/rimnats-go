@@ -13,7 +13,7 @@ import (
 // - req: The protobuf message to send
 // - factory: A function that returns a new instance of the expected reply message
 // - timeout: How long to wait for a response
-func (n *nexor) Request(ctx context.Context, subject string, req proto.Message, factory func() proto.Message, timeout time.Duration) (proto.Message, error) {
+func (n *rimNats) Request(ctx context.Context, subject string, req proto.Message, factory func() proto.Message, timeout time.Duration) (proto.Message, error) {
 	data, err := proto.Marshal(req)
 	if err != nil {
 		if n.cfg.Debug {

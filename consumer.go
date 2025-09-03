@@ -44,7 +44,7 @@ type Subscriber interface {
 //
 // Returns:
 //   - error: Returns an error if the subscription setup fails
-func (n *nexor) Subscribe(
+func (n *rimNats) Subscribe(
 	ctx context.Context,
 	subject string,
 	stream string,

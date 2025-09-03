@@ -19,7 +19,7 @@ type Client interface {
 	Close()
 	Connect()
 	CreateStream(ctx context.Context, config jetstream.StreamConfig) error
-	GetEngine() *nexor
+	GetEngine() *rimNats
 	JetStream() jetstream.JetStream
 	Publish(ctx context.Context, subject string, msg proto.Message, opts ...jetstream.PublishOpt) error
 	Reply(subject string, reqFactory func() proto.Message, handler func(context.Context, proto.Message) (proto.Message, error)) error
@@ -27,14 +27,14 @@ type Client interface {
 	Subscribe(ctx context.Context, subject, stream, durable string, factory func() proto.Message, handler ProtoHandler, opts ...jetstream.PullConsumeOpt) error
 }
 
-// Nexor represents a NATS client with JetStream support.
-type nexor struct {
+// Rimnats represents a NATS client with JetStream support.
+type rimNats struct {
 	conn *nats.Conn          // Connection to the NATS server
 	js   jetstream.JetStream // JetStream context for pub/sub operations
 	cfg  *nexorConfig        // Configuration for the NATS client
 }
 
-func (n *nexor) CreateStream(ctx context.Context, config jetstream.StreamConfig) error {
+func (n *rimNats) CreateStream(ctx context.Context, config jetstream.StreamConfig) error {
 	_, err := n.js.CreateOrUpdateStream(ctx, config)
 	if err != nil {
 		log.Fatalf("🚨 Failed to create stream: %v", err)
@@ -43,11 +43,11 @@ func (n *nexor) CreateStream(ctx context.Context, config jetstream.StreamConfig)
 	return nil
 }
 
-func (n *nexor) GetEngine() *nexor {
+func (n *rimNats) GetEngine() *rimNats {
 	return n
 }
 
-func (n *nexor) Connect() {
+func (n *rimNats) Connect() {
 	conn, err := nats.Connect(n.cfg.Url, n.cfg.Opts...)
 	if err != nil {
 		if n.cfg.Debug {
@@ -91,21 +91,21 @@ type nexorConfig struct {
 // a nexorConfig with either default values or those specified in the environment.
 func getConfig() *nexorConfig {
 	var debugMode = false
-	var clientName = "Nexor"
+	var clientName = "Rimnats"
 	var maxConn, maxWait = 5, 5
-	if debugModeValue, found := os.LookupEnv("NEXOR.DEBUG"); found {
+	if debugModeValue, found := os.LookupEnv("RIMNATS.DEBUG"); found {
 		debugMode = debugModeValue == "true"
 	}
 
-	if clientNameValue, found := os.LookupEnv("NEXOR.CLIENT"); found {
+	if clientNameValue, found := os.LookupEnv("RIMNATS.CLIENT"); found {
 		clientName = clientNameValue
 	}
 
-	if maxConnValue := os.Getenv("NEXOR.MAX_CONNECTIONS"); maxConnValue != "" {
+	if maxConnValue := os.Getenv("RIMNATS.MAX_CONNECTIONS"); maxConnValue != "" {
 		maxConn, _ = strconv.Atoi(maxConnValue)
 	}
 
-	if maxWaitValue := os.Getenv("NEXOR.MAX_RECONNECT_WAIT"); maxWaitValue != "" {
+	if maxWaitValue := os.Getenv("RIMNATS.MAX_RECONNECT_WAIT"); maxWaitValue != "" {
 		maxWait, _ = strconv.Atoi(maxWaitValue)
 	}
 
@@ -117,10 +117,10 @@ func getConfig() *nexorConfig {
 	}
 }
 
-// New creates a new Nexor instance connected to the specified NATS server.
+// New creates a new Rimnats instance connected to the specified NATS server.
 // It accepts a URL string and optional NATS options. If no options are provided,
 // it uses default configuration values from environment variables.
-// Returns a configured Nexor instance and any error encountered during connection.
+// Returns a configured Rimnats instance and any error encountered during connection.
 func New(url string, opts ...nats.Option) Client {
 	cfg := getConfig()
 	cfg.Url = url
@@ -134,11 +134,11 @@ func New(url string, opts ...nats.Option) Client {
 		}
 	}
 
-	return &nexor{cfg: cfg}
+	return &rimNats{cfg: cfg}
 }
 
 // Close safely closes the NATS connection.
-func (n *nexor) Close() {
+func (n *rimNats) Close() {
 	if n.conn != nil && !n.conn.IsClosed() {
 		n.conn.Close()
 	}
@@ -146,6 +146,6 @@ func (n *nexor) Close() {
 
 // JetStream exposes the underlying JetStream context
 // so that microservices can create/manage streams and consumers.
-func (n *nexor) JetStream() jetstream.JetStream {
+func (n *rimNats) JetStream() jetstream.JetStream {
 	return n.js
 }

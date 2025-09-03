@@ -19,7 +19,7 @@ import (
 //
 // Returns:
 //   - error: Returns an error if marshaling fails or if publishing fails
-func (n *nexor) Publish(ctx context.Context, subject string, msg proto.Message, opts ...jetstream.PublishOpt) error {
+func (n *rimNats) Publish(ctx context.Context, subject string, msg proto.Message, opts ...jetstream.PublishOpt) error {
 	data, err := proto.Marshal(msg)
 	if err != nil {
 		if n.cfg.Debug {
