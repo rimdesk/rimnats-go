@@ -27,7 +27,7 @@ func main() {
 	ctx := context.Background()
 
 	// Subscribe to the "product.created" event
-	err := client.Subscribe(ctx, "sample.created", "product_stream", "product_service",
+	err := client.Subscribe(ctx, "product.created", "product_stream", "product_service",
 		func() proto.Message {
 			return &v1.Event{} // Factory method to create a specific event type
 		}, func(ctx context.Context, msg proto.Message, m jetstream.Msg) error {
