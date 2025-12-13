@@ -5,11 +5,11 @@ package rimnats
 
 import (
 	"context"
-	"log"
 	"os"
 	"strconv"
 	"time"
 
+	"github.com/beego/beego/v2/core/logs"
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
 	"google.golang.org/protobuf/proto"
@@ -18,9 +18,9 @@ import (
 type Client interface {
 	Close()
 	Connect()
-	CreateStream(ctx context.Context, config jetstream.StreamConfig) error
 	GetEngine() *rimNats
 	JetStream() jetstream.JetStream
+	CreateStream(ctx context.Context, config jetstream.StreamConfig) error
 	Publish(ctx context.Context, subject string, msg proto.Message, opts ...jetstream.PublishOpt) error
 	Reply(subject string, reqFactory func() proto.Message, handler func(context.Context, proto.Message) (proto.Message, error)) error
 	Request(ctx context.Context, subject string, req proto.Message, factory func() proto.Message, timeout time.Duration) (proto.Message, error)
@@ -29,15 +29,16 @@ type Client interface {
 
 // Rimnats represents a NATS client with JetStream support.
 type rimNats struct {
-	conn *nats.Conn          // Connection to the NATS server
-	js   jetstream.JetStream // JetStream context for pub/sub operations
-	cfg  *nexorConfig        // Configuration for the NATS client
+	conn  *nats.Conn          // Connection to the NATS server
+	cfg   *nexorConfig        // Configuration for the NATS client
+	loggR *logs.BeeLogger     // Beego logger for logging
+	js    jetstream.JetStream // JetStream context for pub/sub operations
 }
 
 func (n *rimNats) CreateStream(ctx context.Context, config jetstream.StreamConfig) error {
 	_, err := n.js.CreateOrUpdateStream(ctx, config)
 	if err != nil {
-		log.Fatalf("🚨 Failed to create stream: %v", err)
+		n.loggR.Error("🚨 Failed to create stream: %v", err)
 	}
 
 	return nil
@@ -51,7 +52,7 @@ func (n *rimNats) Connect() {
 	conn, err := nats.Connect(n.cfg.Url, n.cfg.Opts...)
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("🔌 Failed to connect to NATS: %v 🔌\n\n", err)
+			n.loggR.Error("🔌 Failed to connect to NATS: %v 🔌\n\n", err)
 			os.Exit(1)
 		}
 		os.Exit(1)
@@ -60,7 +61,7 @@ func (n *rimNats) Connect() {
 	js, err := jetstream.New(conn)
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("🔌 Failed to connect to Jetstream: %v 🔌", err)
+			n.loggR.Error("🔌 Failed to connect to Jetstream: %v 🔌", err)
 			os.Exit(1)
 		}
 
@@ -72,7 +73,7 @@ func (n *rimNats) Connect() {
 	n.js = js
 
 	if n.cfg.Debug {
-		log.Printf("🚀 Connected to NATS server successful 🚀\n")
+		n.loggR.Info("🚀 Connected to NATS server successful 🚀\n")
 	}
 }
 
@@ -117,6 +118,22 @@ func getConfig() *nexorConfig {
 	}
 }
 
+func getLogger() *logs.BeeLogger {
+	beeLogger := logs.NewLogger(10000)
+
+	beeLogger.SetLogger(
+		logs.AdapterConsole,
+		`{"level":6,"color":true}`,
+	)
+
+	beeLogger.EnableFuncCallDepth(true)
+	beeLogger.SetLogFuncCallDepth(3)
+
+	beeLogger.Async(1000)
+
+	return beeLogger
+}
+
 // New creates a new Rimnats instance connected to the specified NATS server.
 // It accepts a URL string and optional NATS options. If no options are provided,
 // it uses default configuration values from environment variables.
@@ -134,7 +151,7 @@ func New(url string, opts ...nats.Option) Client {
 		}
 	}
 
-	return &rimNats{cfg: cfg}
+	return &rimNats{cfg: cfg, loggR: getLogger()}
 }
 
 // Close safely closes the NATS connection.

@@ -2,7 +2,6 @@ package rimnats
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"google.golang.org/protobuf/proto"
@@ -17,7 +16,7 @@ func (n *rimNats) Request(ctx context.Context, subject string, req proto.Message
 	data, err := proto.Marshal(req)
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ rimnats: failed to marshal request: %v", err)
+			n.loggR.Error("❌ [ rimnats ]: failed to marshal request: %v", err)
 		}
 		return nil, err
 	}
@@ -25,7 +24,7 @@ func (n *rimNats) Request(ctx context.Context, subject string, req proto.Message
 	msg, err := n.conn.RequestWithContext(ctx, subject, data)
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ rimnats: request error: %v", err)
+			n.loggR.Error("❌ [ rimnats ]: request error: %v", err)
 		}
 		return nil, err
 	}
@@ -33,7 +32,7 @@ func (n *rimNats) Request(ctx context.Context, subject string, req proto.Message
 	reply := factory()
 	if err := proto.Unmarshal(msg.Data, reply); err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ rimnats: failed to unmarshal response: %v", err)
+			n.loggR.Error("❌ [ rimnats ]: failed to unmarshal response: %v", err)
 		}
 		return nil, err
 	}

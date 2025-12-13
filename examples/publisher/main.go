@@ -30,7 +30,7 @@ func main() {
 	if err := client.CreateStream(ctx, jetstream.StreamConfig{
 		Name:        "product_stream",
 		Description: "Sample events",
-		Subjects:    []string{"sample.>"},
+		Subjects:    []string{"product.>"},
 		MaxBytes:    1024 * 1024 * 1024,
 	}); err != nil {
 		log.Println("🚨 [RIMNats]: Failed to initialize event bus:", err)
@@ -43,7 +43,7 @@ func main() {
 
 		// List of sample words
 		words := []string{"Apple", "Banana", "Orange", "Mango", "Grape", "Peach", "Plum", "Cherry", "Lemon", "Lime"}
-		subjects := []string{"sample.created", "sample.updated"}
+		subjects := []string{"product.created", "product.updated"}
 
 		// Generate a random word
 		randomWord := words[currentTime.UnixNano()%int64(len(words))]
