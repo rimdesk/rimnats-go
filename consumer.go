@@ -5,7 +5,6 @@ package rimnats
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/nats-io/nats.go/jetstream"
@@ -65,6 +64,7 @@ func (n *rimNats) Subscribe(
 		FilterSubject: subject,
 	})
 	if err != nil {
+		n.loggR.Error("🚨 [ rimnats ]: failed to create consumer: %v", err)
 		return err
 	}
 
@@ -74,7 +74,7 @@ func (n *rimNats) Subscribe(
 		msg := factory()
 		if err := proto.Unmarshal(m.Data(), msg); err != nil {
 			if n.cfg.Debug {
-				log.Printf("🚨 rimnats: failed to decode protobuf: %v", err)
+				n.loggR.Info("🚨 [ rimnats ]: failed to decode protobuf: %v", err)
 			}
 
 			_ = m.Nak() // NACK to let NATS know we couldn't process the message
@@ -84,7 +84,7 @@ func (n *rimNats) Subscribe(
 		// Call the handler to process the message
 		if err := handler(ctx, msg, m); err != nil {
 			if n.cfg.Debug {
-				log.Printf("🚨 rimnats: handler error: %v", err)
+				n.loggR.Info("🚨 [ rimnats ]: handler error: %v", err)
 			}
 
 			_ = m.Nak() // NACK if the handler fails
@@ -94,13 +94,13 @@ func (n *rimNats) Subscribe(
 
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ rimnats: failed to subscribe to subject: %s: %v", subject, err)
+			n.loggR.Info("❌ [ rimnats ]: failed to subscribe to subject: %s: %v", subject, err)
 		}
 		return err
 	}
 
 	if n.cfg.Debug {
-		log.Printf("🚀 rimnats: successfully subscribed to subject: %s", subject)
+		n.loggR.Info("🚀 [ rimnats ]: successfully subscribed to subject: %s", subject)
 	}
 
 	return err

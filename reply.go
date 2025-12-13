@@ -2,7 +2,6 @@ package rimnats
 
 import (
 	"context"
-	"log"
 
 	"github.com/nats-io/nats.go"
 	"google.golang.org/protobuf/proto"
@@ -17,7 +16,7 @@ func (n *rimNats) Reply(subject string, reqFactory func() proto.Message, handler
 		req := reqFactory()
 		if err := proto.Unmarshal(m.Data, req); err != nil {
 			if n.cfg.Debug {
-				log.Printf("❌ rimnats: failed to unmarshal request: %v", err)
+				n.loggR.Error("❌ [ rimnats ]: failed to unmarshal request: %v", err)
 			}
 			return
 		}
@@ -25,7 +24,7 @@ func (n *rimNats) Reply(subject string, reqFactory func() proto.Message, handler
 		resp, err := handler(context.Background(), req)
 		if err != nil {
 			if n.cfg.Debug {
-				log.Printf("❌ rimnats: request handler failed: %v", err)
+				n.loggR.Error("❌ [ rimnats ]: request handler failed: %v", err)
 			}
 			// Optionally send an error message (could serialize error into protobuf)
 			_ = m.Respond([]byte{})
@@ -35,7 +34,7 @@ func (n *rimNats) Reply(subject string, reqFactory func() proto.Message, handler
 		data, err := proto.Marshal(resp)
 		if err != nil {
 			if n.cfg.Debug {
-				log.Printf("❌ rimnats: failed to marshal response: %v", err)
+				n.loggR.Error("❌ [ rimnats ]: failed to marshal response: %v", err)
 			}
 			return
 		}
@@ -44,7 +43,7 @@ func (n *rimNats) Reply(subject string, reqFactory func() proto.Message, handler
 	})
 
 	if err != nil && n.cfg.Debug {
-		log.Printf("❌ rimnats: failed to subscribe for reply on %s: %v", subject, err)
+		n.loggR.Error("❌ [ rimnats ]: failed to subscribe for reply on %s: %v", subject, err)
 	}
 
 	return err

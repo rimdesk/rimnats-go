@@ -2,7 +2,6 @@ package rimnats
 
 import (
 	"context"
-	"log"
 
 	"github.com/nats-io/nats.go/jetstream"
 	"google.golang.org/protobuf/proto"
@@ -23,7 +22,7 @@ func (n *rimNats) Publish(ctx context.Context, subject string, msg proto.Message
 	data, err := proto.Marshal(msg)
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ rimnats: failed to encode protobuf: %v", err)
+			n.loggR.Info("❌ [ rimnats ]: failed to encode protobuf: %v", err)
 		}
 
 		return err
@@ -32,17 +31,17 @@ func (n *rimNats) Publish(ctx context.Context, subject string, msg proto.Message
 	ack, err := n.js.Publish(ctx, subject, data, opts...)
 	if err != nil {
 		if n.cfg.Debug {
-			log.Printf("❌ rimnats: failed to publish message: %v", err)
+			n.loggR.Info("❌ [ rimnats ]: failed to publish message: %v", err)
 		}
 
 		return err
 	}
 
 	if n.cfg.Debug {
-		log.Printf("🚀 rimnats: published message on domain: %s", ack.Domain)
-		log.Printf("🚀 rimnats: published message on sequence: %d", ack.Sequence)
-		log.Printf("🚀 rimnats: published message on duplicate: %v", ack.Duplicate)
-		log.Printf("🚀 rimnats: published message on stream: %s", ack.Stream)
+		n.loggR.Info("🚀 [ rimnats ]: published message on domain: %s", ack.Domain)
+		n.loggR.Info("🚀 [ rimnats ]: published message on sequence: %d", ack.Sequence)
+		n.loggR.Info("🚀 [ rimnats ]: published message on duplicate: %v", ack.Duplicate)
+		n.loggR.Info("🚀 [ rimnats ]: published message on stream: %s", ack.Stream)
 	}
 
 	return err
