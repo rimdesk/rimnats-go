@@ -52,7 +52,7 @@ func (n *rimNats) Connect() {
 	conn, err := nats.Connect(n.cfg.Url, n.cfg.Opts...)
 	if err != nil {
 		if n.cfg.Debug {
-			n.loggR.Error("🔌 Failed to connect to NATS: %v 🔌\n\n", err)
+			n.loggR.Error("🔌 Failed to connect to NATS: %v", err)
 			os.Exit(1)
 		}
 		os.Exit(1)
@@ -73,7 +73,7 @@ func (n *rimNats) Connect() {
 	n.js = js
 
 	if n.cfg.Debug {
-		n.loggR.Info("🚀 Connected to NATS server successful 🚀\n")
+		n.loggR.Info("🚀 Connected to NATS server successful")
 	}
 }
 
