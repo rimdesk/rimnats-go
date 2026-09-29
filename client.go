@@ -18,7 +18,7 @@ import (
 type Client interface {
 	Close()
 	Connect()
-	GetEngine() *rimNats
+	GetEngine() *nats.Conn
 	JetStream() jetstream.JetStream
 	CreateStream(ctx context.Context, config jetstream.StreamConfig) error
 	Publish(ctx context.Context, subject string, msg proto.Message, opts ...jetstream.PublishOpt) error
@@ -44,8 +44,8 @@ func (n *rimNats) CreateStream(ctx context.Context, config jetstream.StreamConfi
 	return nil
 }
 
-func (n *rimNats) GetEngine() *rimNats {
-	return n
+func (n *rimNats) GetEngine() *nats.Conn {
+	return n.conn
 }
 
 func (n *rimNats) Connect() {
